@@ -10,11 +10,7 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.Surface
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
@@ -22,8 +18,10 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.res.ResourcesCompat
 import com.mohsen.numpicker.ui.theme.NumPickerTheme
 
 class MainActivity : ComponentActivity() {
@@ -69,6 +67,27 @@ fun PickerScreen(modifier: Modifier=Modifier,pickerStyle: PickerStyle) {
         mutableStateOf(Rect(Offset.Zero, Size.Zero))
     }
 
+    var bottomReducer by remember {
+        mutableStateOf(0f)
+    }
+
+    var topReducer by remember {
+        mutableStateOf(0f)
+    }
+
+    LaunchedEffect(key1 = true){
+        when (number) {
+            0 -> bottomReducer=30f
+            4 -> topReducer=30f
+            else -> {
+                topReducer=0f
+                bottomReducer=0f
+            }
+        }
+    }
+
+    val typeFace=ResourcesCompat.getFont(LocalContext.current,R.font.number_font)
+
     Canvas(modifier = modifier
         .fillMaxSize()
         .pointerInput(true) {
@@ -84,8 +103,8 @@ fun PickerScreen(modifier: Modifier=Modifier,pickerStyle: PickerStyle) {
         }){
 
         parallelRect.apply {
-            top = center.y-pickerStyle.lineHeight.dp.toPx()/2
-            bottom = center.y+pickerStyle.lineHeight.dp.toPx()/2
+            top = center.y-pickerStyle.lineHeight.dp.toPx()/2+topReducer.dp.toPx()
+            bottom = center.y+pickerStyle.lineHeight.dp.toPx()/2-bottomReducer.dp.toPx()
             left = center.x-pickerStyle.lineBetweenSpace.dp.toPx()/2
             right = center.x+pickerStyle.lineBetweenSpace.dp.toPx()/2
 
@@ -127,13 +146,12 @@ fun PickerScreen(modifier: Modifier=Modifier,pickerStyle: PickerStyle) {
               textPaint.apply {
                 this.color=pickerStyle.textColor.toArgb()
                 this.textSize=pickerStyle.textSize.sp.toPx()
+                this.typeface=typeFace
                 this.isAntiAlias=true
             }
             textPaint.getTextBounds(number.toString(),0,number.toString().length,textRect)
-            Log.e("TAG", "PickerScreen: ${textRect.width()}" )
-            drawText(number.toString(),(parallelRect.centerX()-(textRect.width()/2f)),(parallelRect.centerY()+textRect.height()/2f),textPaint)
-            Log.e("TAG", "PickerScreen: ${parallelRect.centerX()}  ${(parallelRect.centerX()-(textRect.width()/2f))}" )
+            val textWidth= if (number==1) 2*textRect.width()/3 else textRect.width()/2
+            drawText(number.toString(),(parallelRect.centerX()-textWidth),(parallelRect.centerY()+textRect.height()/2f),textPaint)
         }
-
     }
 }
