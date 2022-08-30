@@ -11,5 +11,9 @@ data class PickerStyle(
     val borderColor:Color= Color.White,
     val textColor:Color= Color(1,254,173),
     val textSize:Int= 50,
-    val arcRadius:Float=90f
+    val arcRadius:Float=90f,
+    val initialValue:Int=0,
+    val targetValue:Int=4,
+    val reducerAmount:Float=30f,
+    val translateRate:Float=40f
 )
