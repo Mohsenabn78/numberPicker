@@ -231,7 +231,10 @@ fun PickerScreen(modifier: Modifier = Modifier, pickerStyle: PickerStyle) {
         }
 
         topIndicatorPath.apply {
-            addArc(topIndicatorRect, 180f, 180f)
+            moveTo(topIndicatorRect.left, topIndicatorRect.center.y)
+            lineTo(topIndicatorRect.left, topIndicatorRect.top)
+            lineTo(topIndicatorRect.right, topIndicatorRect.top)
+            lineTo(topIndicatorRect.right, topIndicatorRect.center.y)
             if (topReducer == 0f) {
                 moveTo(
                     topIndicatorRect.center.x,
@@ -253,7 +256,10 @@ fun PickerScreen(modifier: Modifier = Modifier, pickerStyle: PickerStyle) {
         }
 
         bottomIndicatorPath.apply {
-            addArc(bottomIndicatorRect, 0f, 180f)
+            moveTo(bottomIndicatorRect.right, bottomIndicatorRect.center.y)
+            lineTo(bottomIndicatorRect.right, bottomIndicatorRect.bottom)
+            lineTo(bottomIndicatorRect.left, bottomIndicatorRect.bottom)
+            lineTo(bottomIndicatorRect.left, bottomIndicatorRect.center.y)
             if (bottomReducer == 0f) {
                 moveTo(
                     bottomIndicatorRect.center.x,
